@@ -87,7 +87,16 @@ router.get('/directions', cache(300), async (req, res, next) => {
         },
       });
     }
-    
+
+    const coordPattern = /^-?\d+(\.\d+)?,-?\d+(\.\d+)?$/;
+    if (!coordPattern.test(origin) || !coordPattern.test(destination)) {
+      return res.status(400).json({
+        success: false,
+        error: {
+          message: 'Origin and destination must be in "lng,lat" format',
+        },
+      });
+    }
 
     const mbQuery = await mapboxService.getDirections(origin, destination, 'cycling');
     //const route = mbQuery.waypoints.map((waypoint)=>waypoint.location);
@@ -107,6 +116,16 @@ router.get('/alternative', cache(300), async (req, res, next) => {
         success: false,
         error: {
           message: 'Origin and destination are required',
+        },
+      });
+    }
+
+    const coordPattern = /^-?\d+(\.\d+)?,-?\d+(\.\d+)?$/;
+    if (!coordPattern.test(origin) || !coordPattern.test(destination)) {
+      return res.status(400).json({
+        success: false,
+        error: {
+          message: 'Origin and destination must be in "lng,lat" format',
         },
       });
     }

@@ -38,7 +38,13 @@ class CollisionService {
   }
 
   addPaddingToBounds(bounds) {
-    const [swLng, swLat, neLng, neLat] = bounds.split(',').map(Number);
+    const parts = bounds.split(',').map(Number);
+
+    if (parts.length !== 4 || parts.some(n => !Number.isFinite(n))) {
+      throw new Error('Invalid bounds format. Expected four numeric values: "swLng,swLat,neLng,neLat"');
+    }
+
+    const [swLng, swLat, neLng, neLat] = parts;
 
     return {
       xmin: swLng - this.boundsPadding,

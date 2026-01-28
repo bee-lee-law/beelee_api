@@ -5,6 +5,7 @@ class MapboxService {
   constructor() {
     this.apiKey = config.mapboxApiKey;
     this.baseUrl = 'https://api.mapbox.com';
+    this.timeout = 10000;
   }
 
 

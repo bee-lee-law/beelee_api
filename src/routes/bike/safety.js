@@ -18,6 +18,16 @@ router.get('/collisions', cache(300), async (req, res, next) => {
       });
     }
 
+    const boundsPattern = /^-?\d+(\.\d+)?,-?\d+(\.\d+)?,-?\d+(\.\d+)?,-?\d+(\.\d+)?$/;
+    if (!boundsPattern.test(bounds)) {
+      return res.status(400).json({
+        success: false,
+        error: {
+          message: 'Bounds must be four numeric values: "swLng,swLat,neLng,neLat"',
+        },
+      });
+    }
+
     const collisions = await collisionService.getCollisions(bounds);
     res.json({
       success: true,
@@ -42,7 +52,17 @@ router.get('/score', async (req, res, next) => {
       });
     }
 
-    const score = await safetyScoreService.calculateScore(JSON.parse(route));
+    let parsedRoute;
+    try {
+      parsedRoute = JSON.parse(route);
+    } catch {
+      return res.status(400).json({
+        success: false,
+        error: { message: 'Invalid JSON in route parameter' },
+      });
+    }
+
+    const score = await safetyScoreService.calculateScore(parsedRoute);
     res.json({
       success: true,
       data: score,

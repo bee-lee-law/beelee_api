@@ -74,8 +74,8 @@ class OSMService {
       if(!tags.maxspeed)return null;
       const speed = tags.maxspeed;
       try{
-        console.log(maxspeed.substring(0, speed.indexOf(' ')));
-        return Number(maxspeed.substring(0, speed.indexOf(' ')));
+        console.log(speed.substring(0, speed.indexOf(' ')));
+        return Number(speed.substring(0, speed.indexOf(' ')));
       }catch(e){
         return null;
       }

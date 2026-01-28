@@ -1,18 +1,24 @@
 const express = require('express');
 const cors = require('cors');
+const helmet = require('helmet');
 const config = require('./config');
 const errorHandler = require('./middleware/errorHandler');
+const rateLimiter = require('./middleware/rateLimiter');
 const routes = require('./routes');
 
 const app = express();
 
-// Middleware
+// Security middleware
+app.use(helmet());
 app.use(cors({
   origin: config.nodeEnv === 'development' ? true : config.corsOrigins,
   credentials: true,
 }));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(rateLimiter(100, 60000));
+
+// Body parsing with size limits
+app.use(express.json({ limit: '10kb' }));
+app.use(express.urlencoded({ extended: true, limit: '10kb' }));
 
 // Health check endpoint
 app.get('/health', (req, res) => {
