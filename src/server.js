@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
+const cookieParser = require('cookie-parser');
 const config = require('./config');
 const errorHandler = require('./middleware/errorHandler');
 const rateLimiter = require('./middleware/rateLimiter');
@@ -15,6 +16,9 @@ app.use(cors({
   credentials: true,
 }));
 app.use(rateLimiter(100, 60000));
+
+// Cookie parsing
+app.use(cookieParser());
 
 // Body parsing with size limits
 app.use(express.json({ limit: '10kb' }));
@@ -51,6 +55,8 @@ app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
   console.log(`📝 Environment: ${config.nodeEnv}`);
   console.log(`🔗 Health check: http://localhost:${PORT}/health`);
+  console.log(`🔐 Auth API: http://localhost:${PORT}/api/auth`);
+  console.log(`🏆 Challonge API: http://localhost:${PORT}/api/challonge`);
   console.log(`🚴 Bike API: http://localhost:${PORT}/api/bike`);
 });
 
